@@ -6,6 +6,7 @@
 package it.tss.banksystem.bank.entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -19,25 +20,24 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user")
-public class User extends AbstractEntity implements Serializable{
-   
-    public enum Role{
+public class User extends AbstractEntity implements Serializable {
+
+    public enum Role {
         ADMIN, USER
     }
-    
+
     private String fname;
     private String lname;
+    @Column(nullable = false,unique = true)
     private String usr;
+    @Column(nullable = false)
     private String pwd;
     private String email;
     private String tel;
     @Enumerated(EnumType.STRING)
-    private Role role;
-    
-    @ManyToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
-    
+    private Role role = Role.USER;
+
+
     public String getFname() {
         return fname;
     }
@@ -94,13 +94,4 @@ public class User extends AbstractEntity implements Serializable{
         this.role = role;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-    
-    
 }

@@ -30,7 +30,7 @@ public class Transaction extends AbstractEntity implements Serializable{
     
     private Double amount;
     
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Account account;
     
     @ManyToOne
