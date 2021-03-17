@@ -1,0 +1,50 @@
+dipendenze nel pom.xml ----------------
+
+<dependency>
+    <groupId>org.mariadb.jdbc</groupId>
+    <artifactId>mariadb-java-client</artifactId>
+    <version>2.5.2</version>
+</dependency>
+
+
+
+file persistence.xml-------------------
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+    <persistence-unit name="pu" transaction-type="JTA">
+        <jta-data-source>java:global/jdbc/dsbanksystem</jta-data-source>
+        <properties>
+            <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+           <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB103Dialect"></property>
+        </properties>
+    </persistence-unit>
+</persistence>
+
+file web.xml ----------------------
+
+<data-source>
+<name>java:global/jdbc/dsbanksystem</name>
+<class-name>org.mariadb.jdbc.MariaDbDataSource</class-name>
+<url>jdbc:mariadb://localhost:3307/pwbanksystem</url>
+<user>app</user>
+<password>app</password>
+</data-source>
+
+comandi docker --------------------
+
+docker pull mariadb:10.3
+
+docker volume create mariadb-tss
+
+docker run -d --name mariadb-tss -e MYSQL_ROOT_PASSWORD=root -p 3307:3306 --mount source=mariadb-tss,target=/var/lib/mysql --restart=always mariadb:10.3
+
+
+mysql workbench ------------------
+
+creare connessione al server porta 3307
+
+GRANT ALL ON pwbanksystem.* TO 'app'@'%' IDENTIFIED BY 'app';
+
+
