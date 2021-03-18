@@ -36,7 +36,7 @@ public class AccountStore {
     }
 
     public List<Account> findByUser(Long id) {
-        return em.createQuery("select e from Account e where e.user.id= :user_id")
+        return em.createQuery("select e from Account e where e.user.id= :user_id", Account.class)
                 .setParameter("user_id", id)
                 .getResultList();
     }
@@ -60,7 +60,7 @@ public class AccountStore {
         }
         return result;
     }
-
+    
     public void delete(Long id) {
         Account found = em.find(Account.class, id);
         found.setDeleted(true);

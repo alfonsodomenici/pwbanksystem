@@ -8,6 +8,7 @@ package it.tss.banksystem.bank.entity;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,6 +22,7 @@ import javax.persistence.Version;
  * @author alfonso
  */
 @MappedSuperclass
+@EntityListeners({EntityListener.class})
 public abstract class AbstractEntity {
 
     @Id
@@ -28,7 +30,7 @@ public abstract class AbstractEntity {
     protected Long id;
 
     @Column(name = "created_on")
-    protected LocalDateTime createdOn = LocalDateTime.now();
+    protected LocalDateTime createdOn;
 
     @Column(name = "modified_on")
     protected LocalDateTime modifiedOn;
