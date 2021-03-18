@@ -8,7 +8,7 @@
     <data-source>
         <name>java:global/jdbc/dsbanksystem</name>
         <class-name>org.mariadb.jdbc.MariaDbDataSource</class-name>
-        <url>jdbc:mariadb://localhost:3306/pwbanksystem</url>
+        <url>jdbc:mariadb://localhost:3307/pwbanksystem</url>
         <user>app</user>
         <password>app</password>
     </data-source>

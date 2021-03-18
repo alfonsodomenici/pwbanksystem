@@ -6,6 +6,7 @@
 package it.tss.banksystem.bank.entity;
 
 import java.io.Serializable;
+import javax.json.JsonString;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -37,6 +38,7 @@ public class User extends AbstractEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
+    private boolean deleted = false;
 
     public String getFname() {
         return fname;
@@ -46,6 +48,10 @@ public class User extends AbstractEntity implements Serializable {
         this.fname = fname;
     }
 
+    public void setFname(JsonString fname) {
+        setFname(fname==null ? this.fname : fname.getString());
+    }
+    
     public String getLname() {
         return lname;
     }
@@ -54,6 +60,10 @@ public class User extends AbstractEntity implements Serializable {
         this.lname = lname;
     }
 
+    public void setLname(JsonString lname) {
+        setLname(lname==null ? this.lname : lname.getString());
+    }
+    
     public String getUsr() {
         return usr;
     }
@@ -70,6 +80,10 @@ public class User extends AbstractEntity implements Serializable {
         this.pwd = pwd;
     }
 
+    public void setPwd(JsonString pwd) {
+        setPwd(pwd == null ? this.pwd : pwd.getString());
+    }
+    
     public String getEmail() {
         return email;
     }
@@ -78,6 +92,10 @@ public class User extends AbstractEntity implements Serializable {
         this.email = email;
     }
 
+    public void setEmail(JsonString email) {
+        setEmail(email == null ? this.email : email.getString());
+    }
+    
     public String getTel() {
         return tel;
     }
@@ -86,6 +104,10 @@ public class User extends AbstractEntity implements Serializable {
         this.tel = tel;
     }
 
+    public void setTel(JsonString tel) {
+        setTel(tel == null ? this.tel : tel.getString());
+    }
+    
     public Role getRole() {
         return role;
     }
@@ -94,4 +116,13 @@ public class User extends AbstractEntity implements Serializable {
         this.role = role;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    
 }

@@ -1,4 +1,4 @@
-package airhacks.service.ping.boundary;
+package it.tss.banksystem.ping;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
