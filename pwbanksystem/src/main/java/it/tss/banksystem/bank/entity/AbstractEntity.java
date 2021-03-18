@@ -7,6 +7,7 @@ package it.tss.banksystem.bank.entity;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import javax.json.bind.annotation.JsonbDateFormat;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -29,9 +30,11 @@ public abstract class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
+    @JsonbDateFormat(value = "dd/MM/yyyy HH:mm:ss")
     @Column(name = "created_on")
     protected LocalDateTime createdOn;
 
+    @JsonbDateFormat(value = "dd/MM/yyyy HH:mm:ss")
     @Column(name = "modified_on")
     protected LocalDateTime modifiedOn;
 

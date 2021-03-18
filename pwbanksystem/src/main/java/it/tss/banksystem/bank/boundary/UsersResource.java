@@ -21,6 +21,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -36,8 +37,8 @@ public class UsersResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<User> search() {
-        return store.search();
+    public List<User> search(@QueryParam("start") int start, @QueryParam("maxResult") int maxResult) {
+        return store.search(start,maxResult);
     }
 
     @GET
@@ -64,7 +65,7 @@ public class UsersResource {
     public Response update(@PathParam("id") Long id, JsonObject json) {
         User user = store.find(id).orElseThrow(() -> new NotFoundException());
         User updated = store.update(user, json);
-        return Response.ok().entity(user).build();
+        return Response.ok().entity(updated).build();
     }
 
     @DELETE

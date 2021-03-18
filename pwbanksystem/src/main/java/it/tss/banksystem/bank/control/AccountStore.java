@@ -31,7 +31,7 @@ public class AccountStore {
     }
 
     public List<Account> search() {
-        return em.createQuery("select e from Account e order by e.user.usr", Account.class)
+        return em.createQuery("select e from Account e where e.deleted=false order by e.user.usr", Account.class)
                 .getResultList();
     }
 
@@ -64,6 +64,6 @@ public class AccountStore {
     public void delete(Long id) {
         Account found = em.find(Account.class, id);
         found.setDeleted(true);
-        em.merge(id);
+        em.merge(found);
     }
 }

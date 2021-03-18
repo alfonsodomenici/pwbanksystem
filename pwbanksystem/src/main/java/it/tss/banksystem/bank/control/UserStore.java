@@ -40,15 +40,12 @@ public class UserStore {
         User found = em.find(User.class, id);
         return found == null ? Optional.empty() : Optional.of(found);
     }
-
-    public List<User> search() {
-        return search(0, maxResult);
-    } 
     
     public List<User> search(int start, int maxResult) {
+        System.out.println(start + " - " + maxResult);
         return em.createQuery("select e from User e where e.deleted=false order by e.usr ", User.class)
                 .setFirstResult(start)
-                .setMaxResults(maxResult)
+                .setMaxResults(maxResult == 0 ? this.maxResult : maxResult)
                 .getResultList();
     }
 

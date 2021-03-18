@@ -7,6 +7,7 @@ package it.tss.banksystem.bank.entity;
 
 import java.io.Serializable;
 import javax.json.JsonString;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -72,6 +73,7 @@ public class User extends AbstractEntity implements Serializable {
         this.usr = usr;
     }
 
+    @JsonbTransient
     public String getPwd() {
         return pwd;
     }

@@ -5,7 +5,9 @@
  */
 package it.tss.banksystem.bank.entity;
 
+import it.tss.banksystem.bank.boundary.UserLinkAdapter;
 import java.io.Serializable;
+import javax.json.bind.annotation.JsonbTypeAdapter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -26,6 +28,7 @@ public class Account extends AbstractEntity implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
+    @JsonbTypeAdapter(UserLinkAdapter.class)
     private User user;
 
     private boolean deleted = false;
