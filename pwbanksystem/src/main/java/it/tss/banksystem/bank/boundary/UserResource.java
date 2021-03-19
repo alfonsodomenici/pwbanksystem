@@ -9,6 +9,7 @@ import it.tss.banksystem.bank.control.UserStore;
 import it.tss.banksystem.bank.entity.User;
 import javax.inject.Inject;
 import javax.json.JsonObject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -43,6 +44,7 @@ public class UserResource {
     }
 
     @PATCH
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response update( JsonObject json) {
         User user = store.find(id).orElseThrow(() -> new NotFoundException());

@@ -5,6 +5,7 @@
  */
 package it.tss.banksystem.bank.control;
 
+import it.tss.banksystem.bank.boundary.BankException;
 import it.tss.banksystem.bank.entity.Account;
 import java.util.List;
 import java.util.Optional;
@@ -72,5 +73,34 @@ public class AccountStore {
                 .getResultStream()
                 .mapToDouble(Account::getBalance)
                 .sum();
+    }
+
+    public void deposit(Long accountId, Double amount) {
+        Account account = find(accountId).orElseThrow(() -> new BankException("Account inesistente"));
+        account.setBalance(account.getBalance() + amount);
+        em.merge(account);
+    }
+
+    public void withdrawal(Long accountId, Double amount) {
+        Account account = find(accountId).orElseThrow(() -> new BankException("Account inesistente"));
+        checkWithdrawal(account, amount);
+        account.setBalance(account.getBalance() - amount);
+        em.merge(account);
+    }
+
+    public void transfer(Long accountId, Long transferId, Double amount) {
+        Account account = find(accountId).orElseThrow(() -> new BankException("Account inesistente"));
+        checkWithdrawal(account, amount);
+        Account transfer = find(transferId).orElseThrow(() -> new BankException("Transfer Account inesistente"));
+        account.setBalance(account.getBalance() - amount);
+        transfer.setBalance(account.getBalance() + amount);
+        em.merge(account);
+        em.merge(transfer);
+    }
+
+    private void checkWithdrawal(Account account, Double amount) {
+        if (account.getBalance() + account.getOverDraft() < amount) {
+            throw new BankException("Saldo insufficiente");
+        }
     }
 }

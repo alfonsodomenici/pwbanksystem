@@ -8,6 +8,7 @@ package it.tss.banksystem.bank.control;
 import it.tss.banksystem.bank.entity.Transaction;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -20,16 +21,43 @@ import javax.transaction.Transactional;
 @Transactional(Transactional.TxType.REQUIRED)
 public class TransactionStore {
     
+    @Inject
+    AccountStore accountStore;
+    
     @PersistenceContext
     EntityManager em;
      
     public List<Transaction> searchByAccount(Long accountId){
-        return em.createQuery("select e from Transaction e where e.account.id= :accountId order by e.createdOn", Transaction.class)
+        return em.createQuery("select e from Transaction e where e.account.id= :accountId or e.transfer.id= :accountId order by e.createdOn", Transaction.class)
                 .setParameter("accountId", accountId)
                 .getResultList();
     }
 
-    public Transaction create(Transaction t) {
+    public Transaction create(Transaction t){
+        switch(t.getType()){
+            case DEPOSIT:
+               return this.deposit(t);
+            case WITHDRAWAL:
+                return this.withdrawal(t);
+            case TRANSFER:
+                return transfer(t);
+                default:
+                    throw new UnsupportedOperationException("Operazione non supportata...");
+        }
+    }
+    
+    private Transaction deposit(Transaction t) {
+        accountStore.deposit(t.getAccount().getId(), t.getAmount());
+        return em.merge(t);
+    }
+
+    private Transaction withdrawal(Transaction t) {
+        accountStore.withdrawal(t.getAccount().getId(), t.getAmount());
+        return em.merge(t);
+    }
+
+    private Transaction transfer(Transaction t) {
+        accountStore.transfer(t.getAccount().getId(), t.getTransfer().getId(), t.getAmount());
         return em.merge(t);
     }
 }

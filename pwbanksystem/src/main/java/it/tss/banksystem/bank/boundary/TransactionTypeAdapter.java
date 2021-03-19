@@ -14,19 +14,16 @@ import javax.json.bind.adapter.JsonbAdapter;
  *
  * @author alfonso
  */
-public class TransactionTypeAdapter implements JsonbAdapter<Transaction.Type, JsonObject> {
+public class TransactionTypeAdapter implements JsonbAdapter<Transaction.Type, String> {
 
     @Override
-    public JsonObject adaptToJson(Transaction.Type t) throws Exception {
-        return Json.createObjectBuilder()
-                .add("id", t.name() )
-                .add("denominazione", t.name())
-                .build();
+    public String adaptToJson(Transaction.Type t) throws Exception {
+        return t.name();
     }
 
     @Override
-    public Transaction.Type adaptFromJson(JsonObject json) throws Exception {
-        return Transaction.Type.valueOf(json.getString("id"));
+    public Transaction.Type adaptFromJson(String json) throws Exception {
+        return Transaction.Type.valueOf(json);
     }
     
 }

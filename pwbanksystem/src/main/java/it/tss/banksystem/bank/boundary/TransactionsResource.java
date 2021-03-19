@@ -11,8 +11,10 @@ import it.tss.banksystem.bank.entity.Account;
 import it.tss.banksystem.bank.entity.Transaction;
 import java.util.List;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -37,6 +39,9 @@ public class TransactionsResource {
         return store.searchByAccount(accountid);
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Transaction create(Transaction t){
         Account account = accountStore.find(accountid).orElseThrow(() -> new NotFoundException());
         t.setAccount(account);
