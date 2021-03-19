@@ -60,10 +60,17 @@ public class AccountStore {
         }
         return result;
     }
-    
+
     public void delete(Long id) {
         Account found = em.find(Account.class, id);
         found.setDeleted(true);
         em.merge(found);
+    }
+
+    public double totalDeposit() {
+        return em.createQuery("select e from Account e where e.deleted=false ", Account.class)
+                .getResultStream()
+                .mapToDouble(Account::getBalance)
+                .sum();
     }
 }

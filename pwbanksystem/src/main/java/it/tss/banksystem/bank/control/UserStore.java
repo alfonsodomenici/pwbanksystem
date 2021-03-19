@@ -35,18 +35,23 @@ public class UserStore {
     @Inject
     @ConfigProperty(name = "maxResult", defaultValue = "10")
     int maxResult;
-    
+
     public Optional<User> find(Long id) {
         User found = em.find(User.class, id);
         return found == null ? Optional.empty() : Optional.of(found);
     }
-    
+
     public List<User> search(int start, int maxResult) {
         System.out.println(start + " - " + maxResult);
         return em.createQuery("select e from User e where e.deleted=false order by e.usr ", User.class)
                 .setFirstResult(start)
                 .setMaxResults(maxResult == 0 ? this.maxResult : maxResult)
                 .getResultList();
+    }
+
+    public long count() {
+        return em.createQuery("select COUNT(e) from User e ", Long.class)
+                .getSingleResult();
     }
 
     public User create(User u) {
