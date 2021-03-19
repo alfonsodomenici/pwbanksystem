@@ -93,7 +93,7 @@ public class AccountStore {
         checkWithdrawal(account, amount);
         Account transfer = find(transferId).orElseThrow(() -> new BankException("Transfer Account inesistente"));
         account.setBalance(account.getBalance() - amount);
-        transfer.setBalance(account.getBalance() + amount);
+        transfer.setBalance(transfer.getBalance() + amount);
         em.merge(account);
         em.merge(transfer);
     }

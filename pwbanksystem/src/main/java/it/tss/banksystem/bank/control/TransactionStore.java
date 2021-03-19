@@ -7,6 +7,8 @@ package it.tss.banksystem.bank.control;
 
 import it.tss.banksystem.bank.entity.Transaction;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -30,7 +32,9 @@ public class TransactionStore {
     public List<Transaction> searchByAccount(Long accountId){
         return em.createQuery("select e from Transaction e where e.account.id= :accountId or e.transfer.id= :accountId order by e.createdOn", Transaction.class)
                 .setParameter("accountId", accountId)
-                .getResultList();
+                .getResultStream()
+                .peek(v -> this.createDescr(accountId, v))
+                .collect(Collectors.toList());
     }
 
     public Transaction create(Transaction t){
@@ -59,5 +63,11 @@ public class TransactionStore {
     private Transaction transfer(Transaction t) {
         accountStore.transfer(t.getAccount().getId(), t.getTransfer().getId(), t.getAmount());
         return em.merge(t);
+    }
+    
+    private void createDescr(Long accountId, Transaction t){
+        if(t.getType()==Transaction.Type.TRANSFER){
+            t.setDescr(Objects.equals(t.getTransfer().getId(), accountId) ? "RICEVUTO" : "EFFETTUATO");
+        }
     }
 }

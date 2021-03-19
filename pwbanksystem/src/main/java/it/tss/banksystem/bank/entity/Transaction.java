@@ -15,6 +15,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import it.tss.banksystem.bank.boundary.TransactionTypeAdapter;
+import javax.persistence.Transient;
 
 /**
  *
@@ -45,6 +46,9 @@ public class Transaction extends AbstractEntity implements Serializable {
     @Column(length = 2048)
     private String note;
 
+    @Transient
+    private String descr = "EFFETTUATO";
+    
     public Type getType() {
         return type;
     }
@@ -85,4 +89,13 @@ public class Transaction extends AbstractEntity implements Serializable {
         this.note = note;
     }
 
+    public String getDescr() {
+        return descr;
+    }
+
+    public void setDescr(String descr) {
+        this.descr = descr;
+    }
+
+    
 }
