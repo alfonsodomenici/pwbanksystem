@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.tss.banksystem.bank.boundary;
+package it.tss.banksystem.bank.boundary.adapters;
 
 import it.tss.banksystem.bank.entity.Transaction;
 import javax.json.Json;

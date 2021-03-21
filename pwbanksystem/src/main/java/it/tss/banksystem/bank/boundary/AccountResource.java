@@ -5,16 +5,24 @@
  */
 package it.tss.banksystem.bank.boundary;
 
+import it.tss.banksystem.bank.boundary.dto.AccountUpdate;
+import it.tss.banksystem.bank.boundary.dto.AccountView;
+import it.tss.banksystem.bank.boundary.dto.TransactionCreate;
+import it.tss.banksystem.bank.boundary.dto.TransactionList;
+import it.tss.banksystem.bank.boundary.dto.TransactionView;
 import it.tss.banksystem.bank.control.AccountStore;
+import it.tss.banksystem.bank.control.TransactionStore;
 import it.tss.banksystem.bank.entity.Account;
+import it.tss.banksystem.bank.entity.Transaction;
+import java.util.List;
 import javax.inject.Inject;
-import javax.json.JsonObject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PATCH;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
@@ -28,63 +36,68 @@ import javax.ws.rs.core.Response;
 public class AccountResource {
 
     @Inject
-    AccountStore store;
+    private AccountStore store;
+
+    @Inject
+    private TransactionStore transactionStore;
 
     @Context
-    ResourceContext resource;
+    private ResourceContext resource;
 
-    private Long userId;
-    private Long id;
+    private Long accountId;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find() {
-        Account found = store.find(id).orElseThrow(() -> new NotFoundException());
-        return Response.ok().entity(found).build();
+    public AccountView find() {
+        Account found = store.find(accountId).orElseThrow(() -> new NotFoundException());
+        return new AccountView(found);
 
     }
 
     @PATCH
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(JsonObject json) {
-        Account account = store.find(id).orElseThrow(() -> new NotFoundException());
-        Account updated = store.update(account, json);
-        return Response.ok().entity(account).build();
+    public AccountView update(AccountUpdate a) {
+        Account account = store.find(accountId).orElseThrow(() -> new NotFoundException());
+        Account updated = store.update(account, a);
+        return new AccountView(updated);
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete() {
-        Account account = store.find(id).orElseThrow(() -> new NotFoundException());
-        store.delete(id);
+        Account account = store.find(accountId).orElseThrow(() -> new NotFoundException());
+        store.delete(accountId);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
+    @GET
     @Path("transactions")
-    public TransactionsResource transactions() {
-        TransactionsResource sub = resource.getResource(TransactionsResource.class);
-        sub.setUserId(userId);
-        sub.setAccountid(id);
-        return sub;
+    @Produces(MediaType.APPLICATION_JSON)
+    public TransactionList transactions() {
+        return transactionStore.searchByAccountView(accountId);
+    }
+
+    @POST
+    @Path("transactions")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public TransactionView create(TransactionCreate t) {
+        Account account = store.find(accountId).orElseThrow(() -> new NotFoundException());
+        Account transfer = t.transfer == null ? null : store.find(t.transfer.id).orElseThrow(() -> new NotFoundException());
+        Transaction saved = transactionStore.create(new Transaction(t, account, transfer));
+        return new TransactionView(saved);
     }
 
     /*
     get/set
      */
-    public Long getUserId() {
-        return userId;
+    public Long getAccountId() {
+        return accountId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
 }

@@ -5,9 +5,8 @@
  */
 package it.tss.banksystem.bank.entity;
 
-import it.tss.banksystem.bank.boundary.UserLinkAdapter;
+import it.tss.banksystem.bank.boundary.dto.AccountCreate;
 import java.io.Serializable;
-import javax.json.bind.annotation.JsonbTypeAdapter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -22,13 +21,12 @@ import javax.persistence.Table;
 @Table(name = "account")
 public class Account extends AbstractEntity implements Serializable {
 
-    private Double balance;
+    private double balance;
     @Column(name = "over_draft")
-    private Long overDraft;
+    private int overDraft;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
-    @JsonbTypeAdapter(UserLinkAdapter.class)
     private User user;
 
     private boolean deleted = false;
@@ -36,25 +34,25 @@ public class Account extends AbstractEntity implements Serializable {
     public Account() {
     }
 
-    public Account(Double balance, Long overDraft, User user) {
-        this.balance = balance;
-        this.overDraft = overDraft;
+    public Account(AccountCreate a, User user) {
+        this.balance = a.amount;
+        this.overDraft = a.overDraft;
         this.user = user;
     }
 
-    public Double getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
-    public Long getOverDraft() {
+    public int getOverDraft() {
         return overDraft;
     }
 
-    public void setOverDraft(Long overDraft) {
+    public void setOverDraft(int overDraft) {
         this.overDraft = overDraft;
     }
 

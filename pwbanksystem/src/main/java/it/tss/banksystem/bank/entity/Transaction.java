@@ -5,17 +5,14 @@
  */
 package it.tss.banksystem.bank.entity;
 
-import it.tss.banksystem.bank.boundary.AccountLinkAdapter;
 import java.io.Serializable;
-import javax.json.bind.annotation.JsonbTypeAdapter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import it.tss.banksystem.bank.boundary.TransactionTypeAdapter;
-import javax.persistence.Transient;
+import it.tss.banksystem.bank.boundary.dto.TransactionCreate;
 
 /**
  *
@@ -29,25 +26,30 @@ public class Transaction extends AbstractEntity implements Serializable {
         DEPOSIT, WITHDRAWAL, TRANSFER
     }
 
-    @JsonbTypeAdapter(TransactionTypeAdapter.class)
     @Enumerated(EnumType.STRING)
     private Type type;
 
     private Double amount;
 
-    @JsonbTypeAdapter(AccountLinkAdapter.class)
     @ManyToOne(optional = false)
     private Account account;
 
-    @JsonbTypeAdapter(AccountLinkAdapter.class)
     @ManyToOne
     private Account transfer;
 
     @Column(length = 2048)
     private String note;
 
-    @Transient
-    private String descr = "EFFETTUATO";
+    public Transaction() {
+    }
+    
+    public Transaction(TransactionCreate t, Account account, Account transfer) {
+        this.type = t.type;
+        this.amount = t.amount;
+        this.account = account;
+        this.transfer = transfer;
+    }
+    
     
     public Type getType() {
         return type;
@@ -88,14 +90,4 @@ public class Transaction extends AbstractEntity implements Serializable {
     public void setNote(String note) {
         this.note = note;
     }
-
-    public String getDescr() {
-        return descr;
-    }
-
-    public void setDescr(String descr) {
-        this.descr = descr;
-    }
-
-    
 }

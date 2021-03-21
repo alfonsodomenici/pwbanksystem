@@ -5,6 +5,8 @@
  */
 package it.tss.banksystem.bank.entity;
 
+import it.tss.banksystem.bank.boundary.dto.UserCreate;
+import it.tss.banksystem.bank.boundary.dto.UserUpdate;
 import java.io.Serializable;
 import javax.json.JsonString;
 import javax.json.bind.annotation.JsonbTransient;
@@ -30,7 +32,7 @@ public class User extends AbstractEntity implements Serializable {
 
     private String fname;
     private String lname;
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String usr;
     @Column(nullable = false)
     private String pwd;
@@ -41,6 +43,18 @@ public class User extends AbstractEntity implements Serializable {
 
     private boolean deleted = false;
 
+    public User() {
+    }
+
+    public User(UserCreate u) {
+        this.fname = u.fname;
+        this.lname = u.lname;
+        this.usr = u.usr;
+        this.pwd = u.pwd;
+        this.email = u.email;
+        this.tel = u.tel;
+    }
+
     public String getFname() {
         return fname;
     }
@@ -49,10 +63,10 @@ public class User extends AbstractEntity implements Serializable {
         this.fname = fname;
     }
 
-    public void setFname(JsonString fname) {
-        setFname(fname==null ? this.fname : fname.getString());
+    public void setFname(UserUpdate u) {
+        setFname(u.fname == null ? this.fname : u.fname);
     }
-    
+
     public String getLname() {
         return lname;
     }
@@ -61,10 +75,10 @@ public class User extends AbstractEntity implements Serializable {
         this.lname = lname;
     }
 
-    public void setLname(JsonString lname) {
-        setLname(lname==null ? this.lname : lname.getString());
+    public void setLname(UserUpdate u) {
+        setLname(u.lname == null ? this.lname : u.lname);
     }
-    
+
     public String getUsr() {
         return usr;
     }
@@ -73,7 +87,6 @@ public class User extends AbstractEntity implements Serializable {
         this.usr = usr;
     }
 
-    @JsonbTransient
     public String getPwd() {
         return pwd;
     }
@@ -82,10 +95,10 @@ public class User extends AbstractEntity implements Serializable {
         this.pwd = pwd;
     }
 
-    public void setPwd(JsonString pwd) {
-        setPwd(pwd == null ? this.pwd : pwd.getString());
+    public void setPwd(UserUpdate u) {
+        setPwd(u.pwd == null ? this.pwd : u.pwd);
     }
-    
+
     public String getEmail() {
         return email;
     }
@@ -94,10 +107,10 @@ public class User extends AbstractEntity implements Serializable {
         this.email = email;
     }
 
-    public void setEmail(JsonString email) {
-        setEmail(email == null ? this.email : email.getString());
+    public void setEmail(UserUpdate u) {
+        setEmail(u.email == null ? this.email : u.email);
     }
-    
+
     public String getTel() {
         return tel;
     }
@@ -106,10 +119,10 @@ public class User extends AbstractEntity implements Serializable {
         this.tel = tel;
     }
 
-    public void setTel(JsonString tel) {
-        setTel(tel == null ? this.tel : tel.getString());
+    public void setTel(UserUpdate u) {
+        setTel(u.tel == null ? this.tel : u.tel);
     }
-    
+
     public Role getRole() {
         return role;
     }
@@ -126,5 +139,4 @@ public class User extends AbstractEntity implements Serializable {
         this.deleted = deleted;
     }
 
-    
 }

@@ -5,11 +5,15 @@
  */
 package it.tss.banksystem.bank.boundary;
 
+import it.tss.banksystem.bank.boundary.dto.UserCreate;
+import it.tss.banksystem.bank.boundary.dto.UserList;
+import it.tss.banksystem.bank.boundary.dto.UserViewLink;
+import it.tss.banksystem.bank.boundary.dto.UserViewFull;
 import it.tss.banksystem.bank.control.UserStore;
 import it.tss.banksystem.bank.entity.User;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -31,13 +35,13 @@ import javax.ws.rs.core.UriInfo;
 public class UsersResource {
 
     @Context
-    UriInfo uriInfo;
+    private UriInfo uriInfo;
 
     @Inject
-    UserStore store;
+    private UserStore store;
 
     @Context
-    ResourceContext resource;
+    private ResourceContext resource;
 
     @PostConstruct
     public void init() {
@@ -48,24 +52,24 @@ public class UsersResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<User> search(@QueryParam("start") int start, @QueryParam("maxResult") int maxResult) {
-        return store.search(start, maxResult);
+    public UserList search(@QueryParam("start") int start, @QueryParam("maxResult") int maxResult) {
+        return store.searchFullView(start, maxResult);
     }
 
-    @Path("{id}")
-    public UserResource find(@PathParam("id") Long id) {
+    @Path("{userId}")
+    public UserResource find(@PathParam("userId") Long id) {
         UserResource sub = resource.getResource(UserResource.class);
-        sub.setId(id);
+        sub.setUserId(id);
         return sub;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(User u) {
-        User saved = store.create(u);
+    public Response create(@Valid UserCreate u) {
+        User saved = store.create(new User(u));
         return Response.status(Response.Status.CREATED)
-                .entity(saved)
+                .entity(new UserViewFull(saved))
                 .build();
     }
 

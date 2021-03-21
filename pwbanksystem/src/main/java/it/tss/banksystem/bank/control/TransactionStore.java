@@ -5,6 +5,9 @@
  */
 package it.tss.banksystem.bank.control;
 
+import it.tss.banksystem.bank.boundary.dto.TransactionCreate;
+import it.tss.banksystem.bank.boundary.dto.TransactionList;
+import it.tss.banksystem.bank.boundary.dto.TransactionView;
 import it.tss.banksystem.bank.entity.Transaction;
 import java.util.List;
 import java.util.Objects;
@@ -33,10 +36,20 @@ public class TransactionStore {
         return em.createQuery("select e from Transaction e where e.account.id= :accountId or e.transfer.id= :accountId order by e.createdOn", Transaction.class)
                 .setParameter("accountId", accountId)
                 .getResultStream()
-                .peek(v -> this.createDescr(accountId, v))
                 .collect(Collectors.toList());
     }
 
+    public TransactionList  searchByAccountView(Long accountId){
+        TransactionList result = new TransactionList();
+        result.data =  searchByAccount(accountId)
+                .stream()
+                .map(TransactionView::new)
+                .peek(v -> this.createDescr(accountId, v))
+                .collect(Collectors.toList());
+        result.total = result.data.size();
+        return result;
+    }
+    
     public Transaction create(Transaction t){
         switch(t.getType()){
             case DEPOSIT:
@@ -65,9 +78,9 @@ public class TransactionStore {
         return em.merge(t);
     }
     
-    private void createDescr(Long accountId, Transaction t){
-        if(t.getType()==Transaction.Type.TRANSFER){
-            t.setDescr(Objects.equals(t.getTransfer().getId(), accountId) ? "RICEVUTO" : "EFFETTUATO");
+    private void createDescr(Long accountId, TransactionView t){
+        if(t.type==Transaction.Type.TRANSFER){
+            t.descr = Objects.equals(t.transfer.id, accountId) ? "RICEVUTO" : "EFFETTUATO";
         }
     }
 }

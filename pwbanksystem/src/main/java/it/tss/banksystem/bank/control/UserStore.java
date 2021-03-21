@@ -5,10 +5,16 @@
  */
 package it.tss.banksystem.bank.control;
 
+import it.tss.banksystem.bank.boundary.dto.AccountCreate;
+import it.tss.banksystem.bank.boundary.dto.UserViewFull;
+import it.tss.banksystem.bank.boundary.dto.UserList;
+import it.tss.banksystem.bank.boundary.dto.UserUpdate;
+import it.tss.banksystem.bank.boundary.dto.UserViewLink;
 import it.tss.banksystem.bank.entity.Account;
 import it.tss.banksystem.bank.entity.User;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
@@ -41,32 +47,59 @@ public class UserStore {
         return found == null ? Optional.empty() : Optional.of(found);
     }
 
+    private TypedQuery<User> searchQuery(boolean deleted) {
+        return em.createQuery("select e from User e where e.deleted= :deleted order by e.usr ", User.class)
+                .setParameter("deleted", deleted);
+    }
+
+    public List<User> searchAll() {
+        return searchQuery(false).getResultList();
+    }
+
     public List<User> search(int start, int maxResult) {
-        System.out.println(start + " - " + maxResult);
-        return em.createQuery("select e from User e where e.deleted=false order by e.usr ", User.class)
+
+        return searchQuery(false)
                 .setFirstResult(start)
                 .setMaxResults(maxResult == 0 ? this.maxResult : maxResult)
                 .getResultList();
     }
 
-    public long count() {
-        return em.createQuery("select COUNT(e) from User e ", Long.class)
+    public long searchCount() {
+        return em.createQuery("select COUNT(e) from User e where e.deleted=false ", Long.class)
                 .getSingleResult();
+    }
+
+    public Optional<UserViewFull> findView(Long id) {
+        return find(id).map(UserViewFull::new);
+    }
+
+    public UserList searchView(int start, int maxResult) {
+        UserList result = new UserList();
+        result.total = searchCount();
+        result.data = search(start, maxResult).stream().map(UserViewLink::new).collect(Collectors.toList());
+        return result;
+    }
+
+    public UserList searchFullView(int start, int maxResult) {
+        UserList result = new UserList();
+        result.total = searchCount();
+        result.data = search(start, maxResult).stream().map(UserViewFull::new).collect(Collectors.toList());
+        return result;
     }
 
     public User create(User u) {
         User saved = em.merge(u);
-        Account account = new Account(0d, 0l, saved);
+        Account account = new Account(new AccountCreate(), saved);
         accountStore.create(account);
         return saved;
     }
 
-    public User update(User user, JsonObject json) {
-        user.setFname(json.getJsonString("fname"));
-        user.setLname(json.getJsonString("lname"));
-        user.setEmail(json.getJsonString("email"));
-        user.setTel(json.getJsonString("tel"));
-        user.setPwd(json.getJsonString("pwd"));
+    public User update(User user, UserUpdate u) {
+        user.setFname(u);
+        user.setLname(u);
+        user.setEmail(u);
+        user.setTel(u);
+        user.setPwd(u);
         return em.merge(user);
     }
 

@@ -22,14 +22,15 @@ import javax.ws.rs.Path;
 public class BankResource {
 
     @Inject
-    UserStore userStore;
+    private UserStore userStore;
+    
     @Inject
-    AccountStore accountStore;
+    private AccountStore accountStore;
 
     @GET
-    @Path("stats")
+    @Path("/stats")
     public JsonObject stats() {
-        long numUsers = userStore.count();
+        long numUsers = userStore.searchCount();
         double totalDeposit = accountStore.totalDeposit();
         return Json.createObjectBuilder()
                 .add("users", numUsers)
