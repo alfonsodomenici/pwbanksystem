@@ -12,6 +12,7 @@ import it.tss.banksystem.bank.boundary.dto.UserUpdate;
 import it.tss.banksystem.bank.boundary.dto.UserViewLink;
 import it.tss.banksystem.bank.entity.Account;
 import it.tss.banksystem.bank.entity.User;
+import it.tss.banksystem.security.control.SecurityEncoding;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
@@ -88,6 +90,7 @@ public class UserStore {
     }
 
     public User create(User u) {
+        u.setPwd(SecurityEncoding.shaHash(u.getPwd()));
         User saved = em.merge(u);
         Account account = new Account(new AccountCreate(), saved);
         accountStore.create(account);
@@ -108,6 +111,18 @@ public class UserStore {
         found.setDeleted(true);
         em.merge(found);
         accountStore.findByUser(id).stream().map(Account::getId).forEach(accountStore::delete);
+    }
+
+    public Optional<User> findByUserAndPwd(String usr, String pwd) {
+        try {
+            User found = em.createQuery("select e from User e where e.usr= :usr and e.pwd= :pwd", User.class)
+                    .setParameter("usr", usr)
+                    .setParameter("pwd", SecurityEncoding.shaHash(pwd))
+                    .getSingleResult();
+            return Optional.of(found);
+        } catch (NoResultException ex) {
+            return Optional.empty();
+        }
     }
 
 }
