@@ -8,14 +8,10 @@ package it.tss.banksystem.bank.entity;
 import it.tss.banksystem.bank.boundary.dto.UserCreate;
 import it.tss.banksystem.bank.boundary.dto.UserUpdate;
 import java.io.Serializable;
-import javax.json.JsonString;
-import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**

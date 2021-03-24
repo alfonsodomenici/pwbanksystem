@@ -14,8 +14,11 @@ import it.tss.banksystem.bank.control.AccountStore;
 import it.tss.banksystem.bank.control.UserStore;
 import it.tss.banksystem.bank.entity.Account;
 import it.tss.banksystem.bank.entity.User;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -43,9 +46,28 @@ public class UserResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find() {
+    public UserViewFull find() {
         UserViewFull user = store.findView(userId).orElseThrow(() -> new NotFoundException());
-        return Response.ok().entity(user).build();
+        return user;
+    }
+
+    @GET
+    @Path("full")
+    @Produces(MediaType.APPLICATION_JSON)
+    public User findFull() {
+        User user = store.find(userId).orElseThrow(() -> new NotFoundException());
+        return user;
+    }
+    
+    @GET
+    @Path("json")
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonObject findJson() {
+        User user = store.find(userId).orElseThrow(() -> new NotFoundException());
+        return Json.createObjectBuilder()
+                .add("nome", user.getFname() + " " + user.getLname())
+                .add("ruolo", user.getRole().name())
+                .build();
     }
 
     @PATCH
@@ -83,6 +105,7 @@ public class UserResource {
                 .entity(new AccountView(saved))
                 .build();
     }
+
     /*
     get/set
      */
