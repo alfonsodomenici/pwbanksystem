@@ -53,32 +53,13 @@ public class UserResource {
         return user;
     }
 
-    @GET
-    @Path("full")
-    @Produces(MediaType.APPLICATION_JSON)
-    public User findFull() {
-        User user = store.find(userId).orElseThrow(() -> new NotFoundException());
-        return user;
-    }
-
-    @GET
-    @Path("json")
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject findJson() {
-        User user = store.find(userId).orElseThrow(() -> new NotFoundException());
-        return Json.createObjectBuilder()
-                .add("nome", user.getFname() + " " + user.getLname())
-                .add("ruolo", user.getRole().name())
-                .build();
-    }
-
     @PATCH
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(UserUpdate u) {
+    public UserViewFull update(UserUpdate u) {
         User user = store.find(userId).orElseThrow(() -> new NotFoundException());
         User updated = store.update(user, u);
-        return Response.ok().entity(updated).build();
+        return new UserViewFull(user);
     }
 
     @DELETE

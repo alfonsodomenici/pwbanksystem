@@ -84,11 +84,11 @@ public class AccountResource {
     @Path("transactions")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public TransactionView create(TransactionCreate t) {
+    public Response create(TransactionCreate t) {
         Account account = store.find(accountId).orElseThrow(() -> new NotFoundException());
         Account transfer = t.transfer == null ? null : store.find(t.transfer.id).orElseThrow(() -> new NotFoundException());
         Transaction saved = transactionStore.create(new Transaction(t, account, transfer));
-        return new TransactionView(saved);
+        return Response.status(Response.Status.CREATED).entity(new TransactionView(saved)).build();
     }
 
     /*
