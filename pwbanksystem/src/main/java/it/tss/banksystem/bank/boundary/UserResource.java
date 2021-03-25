@@ -16,6 +16,7 @@ import it.tss.banksystem.bank.entity.Account;
 import it.tss.banksystem.bank.entity.User;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -34,6 +35,7 @@ import javax.ws.rs.core.Response;
  *
  * @author alfonso
  */
+@RolesAllowed({"ADMIN", "USER"})
 public class UserResource {
 
     @Inject
@@ -58,7 +60,7 @@ public class UserResource {
         User user = store.find(userId).orElseThrow(() -> new NotFoundException());
         return user;
     }
-    
+
     @GET
     @Path("json")
     @Produces(MediaType.APPLICATION_JSON)

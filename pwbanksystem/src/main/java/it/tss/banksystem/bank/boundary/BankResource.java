@@ -8,6 +8,7 @@ package it.tss.banksystem.bank.boundary;
 import it.tss.banksystem.bank.control.AccountStore;
 import it.tss.banksystem.bank.control.UserStore;
 import java.math.BigDecimal;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -18,6 +19,7 @@ import javax.ws.rs.Path;
  *
  * @author alfonso
  */
+@RolesAllowed({"ADMIN"})
 @Path("/bank")
 public class BankResource {
 
