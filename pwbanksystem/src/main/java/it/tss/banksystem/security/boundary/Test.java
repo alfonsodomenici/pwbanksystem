@@ -13,7 +13,11 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 /**
@@ -25,7 +29,14 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 public class Test {
     
     @Inject
+    @Claim(standard = Claims.sub)
+    private String userId;
+    
+    @Inject
     JsonWebToken jwt;
+    
+    @Context
+    SecurityContext securityContext;
     
     @PostConstruct
     public void init(){
@@ -50,9 +61,11 @@ public class Test {
     
     @GET
     @Path("user")
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER","ADMIN"})
     @Produces(MediaType.TEXT_PLAIN)
     public String testUser(){
+        System.out.println("L'utente ha ruolo USER ? " + securityContext.isUserInRole("USER"));
+        System.out.println("User ID: " + userId );
         return "all users ok..";
     }
     

@@ -12,7 +12,7 @@ import org.eclipse.microprofile.auth.LoginConfig;
  * @author airhacks.com
  */
 @LoginConfig(authMethod = "MP-JWT" , realmName = "MP-JWT")
-@DeclareRoles({" ADMIN","USER"})
+@DeclareRoles({"ADMIN","USER"})
 @ApplicationPath("resources")
 public class JAXRSConfiguration extends Application {
 

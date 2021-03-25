@@ -13,6 +13,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import it.tss.banksystem.bank.boundary.dto.TransactionCreate;
+import java.util.Objects;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 
 /**
  *
@@ -21,6 +25,11 @@ import it.tss.banksystem.bank.boundary.dto.TransactionCreate;
 @Entity
 @Table(name = "transaction")
 public class Transaction extends AbstractEntity implements Serializable {
+
+    @Id
+    @SequenceGenerator(name = "trans_sequence", sequenceName = "trans_sequence", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(generator = "trans_sequence")
+    protected Long id;
 
     public enum Type {
         DEPOSIT, WITHDRAWAL, TRANSFER
@@ -42,15 +51,14 @@ public class Transaction extends AbstractEntity implements Serializable {
 
     public Transaction() {
     }
-    
+
     public Transaction(TransactionCreate t, Account account, Account transfer) {
         this.type = t.type;
         this.amount = t.amount;
         this.account = account;
         this.transfer = transfer;
     }
-    
-    
+
     public Type getType() {
         return type;
     }
@@ -90,4 +98,35 @@ public class Transaction extends AbstractEntity implements Serializable {
     public void setNote(String note) {
         this.note = note;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Transaction other = (Transaction) obj;
+        return Objects.equals(this.id, other.id);
+    }
+
 }

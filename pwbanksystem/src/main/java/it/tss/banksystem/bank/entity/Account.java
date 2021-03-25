@@ -7,10 +7,14 @@ package it.tss.banksystem.bank.entity;
 
 import it.tss.banksystem.bank.boundary.dto.AccountCreate;
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -20,6 +24,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "account")
 public class Account extends AbstractEntity implements Serializable {
+
+    @Id
+    @SequenceGenerator(name = "account_sequence", sequenceName = "account_sequence", initialValue = 100000, allocationSize = 1)
+    @GeneratedValue(generator = "account_sequence")
+    protected Long id;
 
     private double balance;
     @Column(name = "over_draft")
@@ -70,6 +79,36 @@ public class Account extends AbstractEntity implements Serializable {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Account other = (Account) obj;
+        return Objects.equals(this.id, other.id);
     }
 
 }
