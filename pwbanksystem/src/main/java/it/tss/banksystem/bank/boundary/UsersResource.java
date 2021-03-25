@@ -68,8 +68,8 @@ public class UsersResource {
     @RolesAllowed({"ADMIN"})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public UserList search(@QueryParam("start") int start, @QueryParam("maxResult") int maxResult) {
-        return store.searchFullView(start, maxResult);
+    public UserList search(@QueryParam("start") int start, @QueryParam("maxResult") int maxResult, @QueryParam("lname") String lname ) {
+        return store.searchFullView(start, maxResult, lname);
     }
 
     @RolesAllowed({"ADMIN", "USER"})

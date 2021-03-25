@@ -8,10 +8,8 @@ package it.tss.banksystem.bank.boundary.dto;
 import it.tss.banksystem.bank.boundary.adapters.TransactionTypeAdapter;
 import it.tss.banksystem.bank.entity.Transaction;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbTypeAdapter;
-import javax.persistence.Transient;
 
 /**
  *
@@ -24,8 +22,8 @@ public class TransactionView {
     @JsonbDateFormat(value = "dd/MM/yyyy")
     public LocalDateTime when;
     public double amount;
-    public AccountView account;
-    public AccountView transfer;
+    public AccountViewLink account;
+    public AccountViewLink transfer;
     public String descr;
 
     public TransactionView() {
@@ -35,8 +33,8 @@ public class TransactionView {
         this.type = t.getType();
         this.when = t.getCreatedOn();
         this.amount = t.getAmount();
-        this.account = new AccountView(t.getAccount());
-        this.transfer = t.getTransfer() == null ? null : new AccountView(t.getTransfer());
+        this.account = new AccountViewLink(t.getAccount());
+        this.transfer = t.getTransfer() == null ? null : new AccountViewLink(t.getTransfer());
 
     }
 }

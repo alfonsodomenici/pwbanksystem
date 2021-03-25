@@ -21,6 +21,7 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -61,8 +62,8 @@ public class AccountsResource {
     @RolesAllowed({"ADMIN"})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public AccountList search() {
-        return store.searchView();
+    public AccountList search(@QueryParam("minBalance") Double minBalance, @QueryParam("maxBalance") Double maxBalance) {
+        return store.searchView(minBalance,maxBalance);
     }
 
     @RolesAllowed({"ADMIN", "USER"})

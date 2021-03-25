@@ -13,7 +13,9 @@ import javax.validation.constraints.NotEmpty;
  */
 public class UserCreate {
 
+    
     public String fname;
+    @NotEmpty
     public String lname;
     @NotEmpty
     public String usr;

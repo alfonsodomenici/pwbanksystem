@@ -15,6 +15,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -22,10 +24,16 @@ import javax.persistence.Table;
  *
  * @author alfonso
  */
+@NamedQueries({
+    @NamedQuery(name = User.LOGIN, query = "select e from User e where e.usr= :usr and e.pwd= :pwd and e.deleted=false")
+})
+
 @Entity
 @Table(name = "user")
 public class User extends AbstractEntity implements Serializable {
 
+    public static final String LOGIN = "User.login";
+    
     @Id
     @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", initialValue = 1, allocationSize = 1)
     @GeneratedValue(generator = "user_sequence")
@@ -36,6 +44,7 @@ public class User extends AbstractEntity implements Serializable {
     }
 
     private String fname;
+    @Column(nullable = false)
     private String lname;
     @Column(nullable = false, unique = true)
     private String usr;

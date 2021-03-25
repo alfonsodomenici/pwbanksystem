@@ -35,8 +35,10 @@ public class AccountStore {
         return found == null ? Optional.empty() : Optional.of(found);
     }
 
-    public List<Account> search() {
-        return em.createQuery("select e from Account e where e.deleted=false order by e.user.usr", Account.class)
+    public List<Account> search(Double min, Double max) {
+        return em.createQuery("select e from Account e where e.deleted=false and e.balance>= :min and e.balance<= :max order by e.user.usr", Account.class)
+                .setParameter("min", min==null ? Double.MIN_VALUE : min)
+                .setParameter("max", max == null ? Double.MAX_VALUE : max)
                 .getResultList();
     }
 
@@ -50,9 +52,9 @@ public class AccountStore {
         return find(id).map(AccountView::new);
     }
 
-    public AccountList searchView() {
+    public AccountList searchView(Double min, Double max) {
         AccountList result = new AccountList();
-        result.data = search().stream().map(AccountView::new).collect(Collectors.toList());
+        result.data = search(min,max).stream().map(AccountView::new).collect(Collectors.toList());
         result.total = result.data.size();
         return result;
     }

@@ -32,7 +32,7 @@ public class BankResource {
     @GET
     @Path("/stats")
     public JsonObject stats() {
-        long numUsers = userStore.searchCount();
+        long numUsers = userStore.searchCount(null);
         double totalDeposit = accountStore.totalDeposit();
         return Json.createObjectBuilder()
                 .add("users", numUsers)
