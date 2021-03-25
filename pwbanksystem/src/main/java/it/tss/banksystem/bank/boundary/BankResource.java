@@ -5,15 +5,15 @@
  */
 package it.tss.banksystem.bank.boundary;
 
+import it.tss.banksystem.bank.boundary.dto.BankViewStats;
 import it.tss.banksystem.bank.control.AccountStore;
 import it.tss.banksystem.bank.control.UserStore;
-import java.math.BigDecimal;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 /**
  *
@@ -25,19 +25,14 @@ public class BankResource {
 
     @Inject
     private UserStore userStore;
-    
+
     @Inject
     private AccountStore accountStore;
 
     @GET
-    @Path("/stats")
-    public JsonObject stats() {
-        long numUsers = userStore.searchCount(null);
-        double totalDeposit = accountStore.totalDeposit();
-        return Json.createObjectBuilder()
-                .add("users", numUsers)
-                .add("deposits", totalDeposit)
-                .build();
+    @Produces(MediaType.APPLICATION_JSON)
+    public BankViewStats stats() {
+        return new BankViewStats(userStore.searchCount(null), accountStore.totalBalance(), accountStore.avgBalance());
     }
 
 }

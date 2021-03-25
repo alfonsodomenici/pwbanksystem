@@ -62,8 +62,8 @@ public class AccountsResource {
     @RolesAllowed({"ADMIN"})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public AccountList search(@QueryParam("minBalance") Double minBalance, @QueryParam("maxBalance") Double maxBalance) {
-        return store.searchView(minBalance,maxBalance);
+    public AccountList search(@QueryParam("start") int start, @QueryParam("maxResult") int maxResult, @QueryParam("minBalance") Double minBalance, @QueryParam("maxBalance") Double maxBalance ) {
+        return store.searchView(minBalance, maxBalance, start, maxResult);
     }
 
     @RolesAllowed({"ADMIN", "USER"})

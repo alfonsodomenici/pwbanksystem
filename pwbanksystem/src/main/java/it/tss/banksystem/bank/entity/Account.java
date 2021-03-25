@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -21,10 +23,15 @@ import javax.persistence.Table;
  *
  * @author alfonso
  */
+@NamedQueries({
+    @NamedQuery(name = Account.ALL, query = "select e from Account e where e.deleted=false")
+})
 @Entity
 @Table(name = "account")
 public class Account extends AbstractEntity implements Serializable {
 
+    public static final String ALL = "Account.all";
+    
     @Id
     @SequenceGenerator(name = "account_sequence", sequenceName = "account_sequence", initialValue = 100000, allocationSize = 1)
     @GeneratedValue(generator = "account_sequence")

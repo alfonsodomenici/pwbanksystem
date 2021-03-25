@@ -14,12 +14,12 @@ import java.util.List;
 public class AccountList {
 
     public long total;
-    public List<AccountView> data;
+    public List<AccountViewLink> data;
 
     public AccountList() {
     }
 
-    public AccountList(long total, List<AccountView> data) {
+    public AccountList(long total, List<AccountViewLink> data) {
         this.total = total;
         this.data = data;
     }
