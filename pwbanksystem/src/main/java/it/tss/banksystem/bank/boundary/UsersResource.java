@@ -7,7 +7,6 @@ package it.tss.banksystem.bank.boundary;
 
 import it.tss.banksystem.bank.boundary.dto.UserCreate;
 import it.tss.banksystem.bank.boundary.dto.UserList;
-import it.tss.banksystem.bank.boundary.dto.UserViewLink;
 import it.tss.banksystem.bank.boundary.dto.UserViewFull;
 import it.tss.banksystem.bank.control.UserStore;
 import it.tss.banksystem.bank.entity.User;
@@ -31,9 +30,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.microprofile.jwt.Claim;
-import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 /**
  *
@@ -65,18 +63,20 @@ public class UsersResource {
         System.out.println(uriInfo.getAbsolutePath());
     }
 
+    @SecurityRequirement(name = "jwt")
     @RolesAllowed({"ADMIN"})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public UserList search(@QueryParam("start") int start, @QueryParam("maxResult") int maxResult, @QueryParam("lname") String lname ) {
+    public UserList search(@QueryParam("start") int start, @QueryParam("maxResult") int maxResult, @QueryParam("lname") String lname) {
         return store.searchFullView(start, maxResult, lname);
     }
 
+    @SecurityRequirement(name = "jwt")
     @RolesAllowed({"ADMIN", "USER"})
     @Path("{userId}")
     public UserResource find(@PathParam("userId") Long id) {
         boolean isUserRole = securityCtx.isUserInRole(User.Role.USER.name());
-        if (isUserRole && (jwt == null || jwt.getSubject()== null || Long.parseLong(jwt.getSubject()) != id)) {
+        if (isUserRole && (jwt == null || jwt.getSubject() == null || Long.parseLong(jwt.getSubject()) != id)) {
             throw new ForbiddenException(Response.status(Response.Status.FORBIDDEN).entity("Access forbidden: role not allowed").build());
         }
         UserResource sub = resource.getResource(UserResource.class);

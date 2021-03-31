@@ -29,11 +29,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 /**
  *
  * @author tss
  */
+@SecurityRequirement(name = "jwt")
 @DenyAll
 @Path("/accounts")
 public class AccountsResource {
@@ -62,7 +64,7 @@ public class AccountsResource {
     @RolesAllowed({"ADMIN"})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public AccountList search(@QueryParam("start") int start, @QueryParam("maxResult") int maxResult, @QueryParam("minBalance") Double minBalance, @QueryParam("maxBalance") Double maxBalance ) {
+    public AccountList search(@QueryParam("start") int start, @QueryParam("maxResult") int maxResult, @QueryParam("minBalance") Double minBalance, @QueryParam("maxBalance") Double maxBalance) {
         return store.searchView(minBalance, maxBalance, start, maxResult);
     }
 

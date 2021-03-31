@@ -29,11 +29,13 @@ import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 /**
  *
  * @author alfonso
  */
+@SecurityRequirement(name = "jwt")
 @RolesAllowed({"ADMIN", "USER"})
 public class AccountResource {
 

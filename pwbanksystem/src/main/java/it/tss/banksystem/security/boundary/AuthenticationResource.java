@@ -14,6 +14,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -31,6 +32,7 @@ public class AuthenticationResource {
     JWTManager jwtManager;
 
     @POST
+    @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response login(@FormParam("usr") String usr, @FormParam("pwd") String pwd) {
         User found = store.findByUserAndPwd(usr, pwd).orElseThrow(() -> new NotAuthorizedException("invalid user or password", Response.status(Response.Status.UNAUTHORIZED).build()));

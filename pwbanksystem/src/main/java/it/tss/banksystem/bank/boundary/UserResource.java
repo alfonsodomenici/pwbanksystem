@@ -30,11 +30,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 /**
  *
  * @author alfonso
  */
+@SecurityRequirement(name = "jwt")
 @RolesAllowed({"ADMIN", "USER"})
 public class UserResource {
 

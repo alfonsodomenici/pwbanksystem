@@ -33,7 +33,8 @@ public class EntityListener {
 
     @PrePersist
     public void onPrePersist(AbstractEntity e) {
-        if (jwt != null) {
+
+        if (jwt != null && jwt.getSubject() != null) {
             e.setCreatedBy(userStore.find(Long.parseLong(jwt.getSubject())).get());
         }
         e.setCreatedOn(LocalDateTime.now());
@@ -41,7 +42,7 @@ public class EntityListener {
 
     @PreUpdate
     public void onPreUpdate(AbstractEntity e) {
-        if (jwt != null) {
+        if (jwt != null && jwt.getSubject() != null) {
             e.setModifiedBy(userStore.find(Long.parseLong(jwt.getSubject())).get());
         }
         e.setModifiedOn(LocalDateTime.now());
