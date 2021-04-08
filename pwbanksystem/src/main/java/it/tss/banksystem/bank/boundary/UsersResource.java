@@ -61,6 +61,7 @@ public class UsersResource {
         System.out.println(uriInfo.getPath());
         System.out.println(uriInfo.getBaseUri());
         System.out.println(uriInfo.getAbsolutePath());
+        System.out.println();
     }
 
     @SecurityRequirement(name = "jwt")

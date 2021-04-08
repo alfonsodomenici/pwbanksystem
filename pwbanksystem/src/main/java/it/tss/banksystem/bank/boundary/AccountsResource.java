@@ -28,6 +28,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
@@ -51,6 +53,11 @@ public class AccountsResource {
 
     @Inject
     JsonWebToken jwt;
+    
+    @Inject
+    @Claim(standard = Claims.sub)
+    Long userId;
+    
     @Inject
     private AccountStore store;
 
