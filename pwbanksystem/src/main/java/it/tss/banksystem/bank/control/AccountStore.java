@@ -11,6 +11,7 @@ import it.tss.banksystem.bank.boundary.dto.AccountUpdate;
 import it.tss.banksystem.bank.boundary.dto.AccountView;
 import it.tss.banksystem.bank.boundary.dto.AccountViewSearch;
 import it.tss.banksystem.bank.entity.Account;
+import it.tss.banksystem.trace.Logged;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,10 +31,16 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  *
  * @author alfonso
  */
+@Logged
 @RequestScoped
 @Transactional(Transactional.TxType.REQUIRED)
 public class AccountStore {
 
+    //private System.Logger log = System.getLogger(AccountStore.class.getName());
+    
+    @Inject
+    System.Logger log ;
+    
     @PersistenceContext
     private EntityManager em;
 
@@ -42,6 +49,7 @@ public class AccountStore {
     int maxResult;
 
     public Optional<Account> find(Long id) {
+        log.log(System.Logger.Level.INFO, "find account " + id);
         Account found = em.find(Account.class, id);
         return found == null ? Optional.empty() : Optional.of(found);
     }

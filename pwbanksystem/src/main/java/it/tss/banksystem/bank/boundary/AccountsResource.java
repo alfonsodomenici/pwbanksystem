@@ -42,6 +42,9 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 @Path("/accounts")
 public class AccountsResource {
 
+    @Inject
+    System.Logger LOG;
+    
     @Context
     private ResourceContext resource;
 
@@ -63,9 +66,9 @@ public class AccountsResource {
 
     @PostConstruct
     public void init() {
-        System.out.println(uriInfo.getPath());
-        System.out.println(uriInfo.getBaseUri());
-        System.out.println(uriInfo.getAbsolutePath());
+       LOG.log(System.Logger.Level.INFO,uriInfo.getPath());
+       LOG.log(System.Logger.Level.INFO,uriInfo.getBaseUri());
+       LOG.log(System.Logger.Level.INFO,uriInfo.getAbsolutePath());
     }
 
     @RolesAllowed({"ADMIN"})

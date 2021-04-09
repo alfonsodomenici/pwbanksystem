@@ -31,15 +31,20 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 /**
  *
  * @author alfonso
  */
+@Timed
 @DenyAll
 @Path("/users")
 public class UsersResource {
+
+    @Inject
+    System.Logger LOG;
 
     @Context
     private UriInfo uriInfo;
@@ -58,10 +63,9 @@ public class UsersResource {
 
     @PostConstruct
     public void init() {
-        System.out.println(uriInfo.getPath());
-        System.out.println(uriInfo.getBaseUri());
-        System.out.println(uriInfo.getAbsolutePath());
-        System.out.println();
+        LOG.log(System.Logger.Level.INFO, uriInfo.getPath());
+        LOG.log(System.Logger.Level.INFO, uriInfo.getBaseUri());
+        LOG.log(System.Logger.Level.INFO, uriInfo.getAbsolutePath());
     }
 
     @SecurityRequirement(name = "jwt")

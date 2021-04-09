@@ -9,6 +9,7 @@ import it.tss.banksystem.bank.boundary.dto.TransactionCreate;
 import it.tss.banksystem.bank.boundary.dto.TransactionList;
 import it.tss.banksystem.bank.boundary.dto.TransactionView;
 import it.tss.banksystem.bank.entity.Transaction;
+import it.tss.banksystem.trace.Logged;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ import javax.transaction.Transactional;
  *
  * @author tss
  */
+@Logged
 @RequestScoped
 @Transactional(Transactional.TxType.REQUIRED)
 public class TransactionStore {

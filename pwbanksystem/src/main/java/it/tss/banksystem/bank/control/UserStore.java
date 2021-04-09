@@ -12,11 +12,16 @@ import it.tss.banksystem.bank.boundary.dto.UserUpdate;
 import it.tss.banksystem.bank.boundary.dto.UserViewLink;
 import it.tss.banksystem.bank.entity.Account;
 import it.tss.banksystem.bank.entity.User;
+import it.tss.banksystem.security.boundary.AuthenticationFailed;
+import it.tss.banksystem.security.boundary.AuthenticationSuccess;
 import it.tss.banksystem.security.control.SecurityEncoding;
+import it.tss.banksystem.slowdown.Slowerer;
+import it.tss.banksystem.trace.Logged;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -29,12 +34,14 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  *
  * @author alfonso
  */
+@Logged
 @RequestScoped
 @Transactional(Transactional.TxType.REQUIRED)
 public class UserStore {
 
-    private System.Logger LOG = System.getLogger(UserStore.class.getName());
-    
+    @Inject
+    System.Logger log;
+
     @PersistenceContext
     private EntityManager em;
 
@@ -45,8 +52,16 @@ public class UserStore {
     @ConfigProperty(name = "maxResult", defaultValue = "10")
     int maxResult;
 
+    @Inject
+    @AuthenticationSuccess
+    private Event<String> authSuccess;
+
+    @Inject
+    @AuthenticationFailed
+    private Event<String> authFailed;
+
     public Optional<User> find(Long id) {
-        LOG.log(System.Logger.Level.INFO, "find user " + id);
+        log.log(System.Logger.Level.INFO, "find user " + id);
         User found = em.find(User.class, id);
         return found == null ? Optional.empty() : Optional.of(found);
     }
@@ -57,6 +72,7 @@ public class UserStore {
                 .setParameter("lname", lname == null ? "%" : "%" + lname + "%");
     }
 
+    
     public List<User> searchAll() {
         return searchQuery(false, null).getResultList();
     }
@@ -86,6 +102,7 @@ public class UserStore {
         return result;
     }
 
+    @Slowerer
     public UserList searchFullView(int start, int maxResult, String lname) {
         UserList result = new UserList();
         result.total = searchCount(lname);
@@ -123,8 +140,10 @@ public class UserStore {
                     .setParameter("usr", usr)
                     .setParameter("pwd", SecurityEncoding.shaHash(pwd))
                     .getSingleResult();
+            authSuccess.fire("Login ok...");
             return Optional.of(found);
         } catch (NoResultException ex) {
+            authFailed.fire("Login failed for user :" + usr);
             return Optional.empty();
         }
     }

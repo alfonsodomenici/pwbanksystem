@@ -21,6 +21,9 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 public class EntityListener {
 
     @Inject
+    System.Logger LOG;
+
+    @Inject
     UserStore userStore;
 
     @Inject
@@ -28,7 +31,7 @@ public class EntityListener {
 
     @PostConstruct
     public void init() {
-        System.out.println("init entity listener..");
+        LOG.log(System.Logger.Level.INFO, "init entity listener..");
     }
 
     @PrePersist
